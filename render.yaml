@@ -2,7 +2,7 @@ services:
 - type: web
   name: line-bot-nodejs-echo
   env: node
-  repo: https://github.com/mumuchan1020/1.git
+  repo: https://github.com/mumuchan1020/tokyo.git
   buildCommand: cd examples/echo-bot;npm install
   startCommand: cd examples/echo-bot;node .
   plan: free
