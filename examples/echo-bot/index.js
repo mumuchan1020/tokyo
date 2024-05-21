@@ -6,8 +6,8 @@ const line = require('@line/bot-sdk');
 
 // 從環境變量中創建 LINE SDK 配置
 const config = {
-  channelSecret: 4de7804ae152020565d1a8546e5636ae
-  channelAccessToken: ytyib3TUCBV/AuVT5z4HI71GfH8uxDvltNsQjM4+K4oRd4wSoneE5KgHTFsfgzGG21d3aLJs+fKzNhF63D8rFwwEaC+S6tybH6vvnKXQQIZCUdDV/mL5dBcAmjNrmhoC3fDhSJFq1qnMhi9My8Bx7gdB04t89/1O/w1cDnyilFU=
+  channelSecret: process.env.CHANNEL_SECRET,
+  channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
 };
 
 // 創建 LINE SDK 客戶端
