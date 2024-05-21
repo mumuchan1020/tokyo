@@ -62,13 +62,13 @@ async function handleEvent(event) {
 
   // 根據消息內容構建 Arduino 控制 URL
   if (message === '1' || message === 'a') {
-    commandUrl = 'http://<arduino-ip-address>/16/on'; // 控制設備打開
+    commandUrl = 'http://<192.168.11.5>/16/on'; // 控制設備打開
   } else if (message === '0' || message === 'b') {
-    commandUrl = 'http://<arduino-ip-address>/16/off'; // 控制設備關閉
+    commandUrl = 'http://<192.168.11.5>/16/off'; // 控制設備關閉
   } else if (message === '2' || message === 'c') {
-    commandUrl = 'http://<arduino-ip-address>/17/on'; // 控制設備打開
+    commandUrl = 'http://<192.168.11.5>/17/on'; // 控制設備打開
   } else if (message === '3' || message === 'd') {
-    commandUrl = 'http://<arduino-ip-address>/17/off'; // 控制設備關閉
+    commandUrl = 'http://<192.168.11.5>/17/off'; // 控制設備關閉
   }
 
   // 如果 commandUrl 不為空，發送請求到 Arduino
