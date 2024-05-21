@@ -33,7 +33,7 @@ app.post('/send-message', (req, res) => {
   const message = req.body.message;
   if (message) {
     // 向 LINE Bot 用戶發送消息
-    client.pushMessage('<USER_ID>', { // 替換為您 LINE Bot 用戶的 ID
+    client.pushMessage('<U5f4d73e618b7bdfb0cb796dd4458dbb1>', { // 替換為您 LINE Bot 用戶的 ID
       type: 'text',
       text: message
     })
