@@ -21,10 +21,12 @@ app.use(express.json()); // 增加 JSON 解析中間件
 app.post('/callback', line.middleware(config), (req, res) => {
   Promise
     .all(req.body.events.map(handleEvent))
-    .then((result) => res.json(result))
+    .then((result) => {
+      res.status(200).json(result); // 确保返回 200 状态码
+    })
     .catch((err) => {
-      console.error(err);
-      res.status(500).end();
+      console.error('Error handling event:', err);
+      res.status(500).json({ error: 'Failed to handle event' }); // 返回详细错误信息
     });
 });
 
@@ -33,7 +35,7 @@ app.post('/send-message', (req, res) => {
   const message = req.body.message;
   if (message) {
     // 向 LINE Bot 用戶發送消息
-    client.pushMessage('<U5f4d73e618b7bdfb0cb796dd4458dbb1>', { // 替換為您 LINE Bot 用戶的 ID
+    client.pushMessage('<USER_ID>', { // 替換為您 LINE Bot 用戶的 ID
       type: 'text',
       text: message
     })
@@ -41,7 +43,7 @@ app.post('/send-message', (req, res) => {
       res.status(200).json({ status: 'Message sent' });
     })
     .catch((err) => {
-      console.error(err);
+      console.error('Failed to send message:', err);
       res.status(500).json({ status: 'Failed to send message', error: err });
     });
   } else {
@@ -62,13 +64,13 @@ async function handleEvent(event) {
 
   // 根據消息內容構建 Arduino 控制 URL
   if (message === '1' || message === 'a') {
-    commandUrl = 'http://<192.168.11.5>/16/on'; // 控制設備打開
+    commandUrl = 'http://<arduino-ip-address>/16/on'; // 控制設備打開
   } else if (message === '0' || message === 'b') {
-    commandUrl = 'http://<192.168.11.5>/16/off'; // 控制設備關閉
+    commandUrl = 'http://<arduino-ip-address>/16/off'; // 控制設備關閉
   } else if (message === '2' || message === 'c') {
-    commandUrl = 'http://<192.168.11.5>/17/on'; // 控制設備打開
+    commandUrl = 'http://<arduino-ip-address>/17/on'; // 控制設備打開
   } else if (message === '3' || message === 'd') {
-    commandUrl = 'http://<192.168.11.5>/17/off'; // 控制設備關閉
+    commandUrl = 'http://<arduino-ip-address>/17/off'; // 控制設備關閉
   }
 
   // 如果 commandUrl 不為空，發送請求到 Arduino
