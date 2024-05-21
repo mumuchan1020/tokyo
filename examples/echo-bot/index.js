@@ -1,25 +1,23 @@
 'use strict';
 
 const express = require('express');
-const bodyParser = require('body-parser');
 const axios = require('axios');
 const line = require('@line/bot-sdk');
 
-// 從環境變量中創建LINE SDK配置
+// 從環境變量中創建 LINE SDK 配置
 const config = {
   channelSecret: process.env.CHANNEL_SECRET,
-  channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN
+  channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
 };
 
-// 創建LINE SDK客戶端
+// 創建 LINE SDK 客戶端
 const client = new line.Client(config);
 
-// 創建Express應用
-// 關於Express本身的更多信息: https://expressjs.com/
+// 創建 Express 應用程式
 const app = express();
+app.use(express.json()); // 增加 JSON 解析中間件
 
-// 使用中介軟體註冊Webhook處理程序
-// 關於中介軟體的更多信息，請參閱文檔
+// 使用中介軟件註冊 Webhook 處理程序
 app.post('/callback', line.middleware(config), (req, res) => {
   Promise
     .all(req.body.events.map(handleEvent))
@@ -30,10 +28,31 @@ app.post('/callback', line.middleware(config), (req, res) => {
     });
 });
 
+// 新增處理來自 Arduino 的消息的端點
+app.post('/send-message', (req, res) => {
+  const message = req.body.message;
+  if (message) {
+    // 向 LINE Bot 用戶發送消息
+    client.pushMessage('<USER_ID>', { // 替換為您 LINE Bot 用戶的 ID
+      type: 'text',
+      text: message
+    })
+    .then(() => {
+      res.status(200).json({ status: 'Message sent' });
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).json({ status: 'Failed to send message', error: err });
+    });
+  } else {
+    res.status(400).json({ status: 'No message provided' });
+  }
+});
+
 // 事件處理函數
 async function handleEvent(event) {
   if (event.type !== 'message' || event.message.type !== 'text') {
-    // 忽略非簡訊事件
+    // 忽略非文本消息事件
     return Promise.resolve(null);
   }
 
@@ -41,36 +60,36 @@ async function handleEvent(event) {
   const message = event.message.text.toLowerCase();
   let commandUrl = '';
 
-  // 根據消息內容構建Arduino控制URL
-  if (message.includes('turn on 16')) {
-    commandUrl = 'http://<arduino-ip-address>/16/on';
-  } else if (message.includes('turn off 16')) {
-    commandUrl = 'http://<arduino-ip-address>/16/off';
-  } else if (message.includes('turn on 17')) {
-    commandUrl = 'http://<arduino-ip-address>/17/on';
-  } else if (message.includes('turn off 17')) {
-    commandUrl = 'http://<arduino-ip-address>/17/off';
+  // 根據消息內容構建 Arduino 控制 URL
+  if (message === '1' || message === 'a') {
+    commandUrl = 'http://<arduino-ip-address>/16/on'; // 控制設備打開
+  } else if (message === '0' || message === 'b') {
+    commandUrl = 'http://<arduino-ip-address>/16/off'; // 控制設備關閉
+  } else if (message === '2' || message === 'c') {
+    commandUrl = 'http://<arduino-ip-address>/17/on'; // 控制設備打開
+  } else if (message === '3' || message === 'd') {
+    commandUrl = 'http://<arduino-ip-address>/17/off'; // 控制設備關閉
   }
 
-  // 如果commandUrl不為空，發送請求到Arduino
+  // 如果 commandUrl 不為空，發送請求到 Arduino
   if (commandUrl) {
     try {
       await axios.get(commandUrl);
-      // 回復用戶，命令已發送到Arduino
+      // 回覆用戶，命令已發送到 Arduino
       return client.replyMessage(event.replyToken, {
         type: 'text',
-        text: `命令已發送到Arduino: ${message}`
+        text: `命令已發送到 Arduino: ${message}`
       });
     } catch (error) {
-      console.error('發送命令到Arduino時出錯:', error);
-      // 回復用戶，發送命令失敗
+      console.error('發送命令到 Arduino 時出錯:', error);
+      // 回覆用戶，發送命令失敗
       return client.replyMessage(event.replyToken, {
         type: 'text',
-        text: `發送命令到Arduino失敗: ${message}`
+        text: `發送命令到 Arduino 失敗: ${message}`
       });
     }
   } else {
-    // 回復用戶，無效的命令
+    // 回覆用戶，無效的命令
     return client.replyMessage(event.replyToken, {
       type: 'text',
       text: `無效的命令: ${message}`
@@ -78,8 +97,8 @@ async function handleEvent(event) {
   }
 }
 
-// listen on port
+// 監聽端口
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-  console.log(`listening on ${port}`);
+  console.log(`正在監聽端口 ${port}`);
 });
