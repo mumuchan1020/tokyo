@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 
 // 用于验证签名的 Channel Secret
-const channelSecret = 'YOUR_CHANNEL_SECRET';
+const channelSecret = '4de7804ae152020565d1a8546e5636ae';
 
 // 验证签名的函数
 function validateSignature(signature, requestBody) {
