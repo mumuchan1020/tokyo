@@ -1,9 +1,13 @@
 const crypto = require('crypto');
+const axios = require('axios');
 
-// 用于验证签名的 Channel Secret
+// 用於驗證簽名的 Channel Secret
 const channelSecret = '4de7804ae152020565d1a8546e5636ae';
 
-// 验证签名的函数
+// Arduino 的 IP 地址
+const arduinoIPAddress = '192.168.1.5';
+
+// 驗證簽名的函數
 function validateSignature(signature, requestBody) {
     const hash = crypto.createHmac('sha256', channelSecret)
                        .update(requestBody)
@@ -12,7 +16,7 @@ function validateSignature(signature, requestBody) {
     return signature === hash;
 }
 
-// Express 中间件，用于验证签名
+// Express 中間件，用於驗證簽名
 function verifySignatureMiddleware(req, res, next) {
     const signature = req.headers['x-line-signature'];
     const requestBody = JSON.stringify(req.body);
@@ -25,26 +29,49 @@ function verifySignatureMiddleware(req, res, next) {
         return res.status(403).json({ error: 'Invalid signature' });
     }
     
-    next(); // 签名验证通过，继续处理请求
+    next(); // 簽名驗證通過，繼續處理請求
 }
 
-// 在 Express 应用中使用中间件
+// 在 Express 應用程式中使用中間件
 const express = require('express');
 const app = express();
 
 app.use(express.json());
 app.use(verifySignatureMiddleware);
 
-// 处理 LINE 平台发送的 POST 请求
+// 處理 LINE 平台發送的 POST 請求
 app.post('/webhook', (req, res) => {
-    // 处理接收到的消息
-    console.log('Received message:', req.body);
+    // 處理接收到的消息
+    const receivedMessage = req.body.events[0].message.text.toLowerCase();
+    console.log('Received message:', receivedMessage);
     
-    // 响应 200 OK
+    // 控制 Arduino
+    let commandUrl = '';
+    if (receivedMessage === '1' || receivedMessage === 'a') {
+        commandUrl = `http://${arduinoIPAddress}/16/on`; // 控制設備打開
+    } else if (receivedMessage === '0' || receivedMessage === 'b') {
+        commandUrl = `http://${arduinoIPAddress}/16/off`; // 控制設備關閉
+    } else if (receivedMessage === '2' || receivedMessage === 'c') {
+        commandUrl = `http://${arduinoIPAddress}/17/on`; // 控制設備打開
+    } else if (receivedMessage === '3' || receivedMessage === 'd') {
+        commandUrl = `http://${arduinoIPAddress}/17/off`; // 控制設備關閉
+    }
+    
+    if (commandUrl) {
+        axios.get(commandUrl)
+            .then(response => {
+                console.log('Arduino command sent successfully');
+            })
+            .catch(error => {
+                console.error('Failed to send command to Arduino:', error);
+            });
+    }
+    
+    // 回應 200 OK
     res.status(200).end();
 });
 
-// 启动 Express 服务器
+// 啟動 Express 伺服器
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
