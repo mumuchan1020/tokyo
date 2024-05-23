@@ -1,12 +1,11 @@
-
 const express = require('express');
 const axios = require('axios');
 const line = require('@line/bot-sdk');
 
-// 從環境變量中創建 LINE SDK 配置
+// 填入您的 Channel Secret 和 Channel Access Token
 const config = {
-  channelSecret: process.env.CHANNEL_SECRET,
-  channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
+  channelSecret: '4de7804ae152020565d1a8546e5636ae',
+  channelAccessToken: 'ytyib3TUCBV/AuVT5z4HI71GfH8uxDvltNsQjM4+K4oRd4wSoneE5KgHTFsfgzGG21d3aLJs+fKzNhF63D8rFwwEaC+S6tybH6vvnKXQQIZCUdDV/mL5dBcAmjNrmhoC3fDhSJFq1qnMhi9My8Bx7gdB04t89/1O/w1cDnyilFU=',
 };
 
 // 創建 LINE SDK 客戶端
@@ -34,7 +33,7 @@ app.post('/send-message', (req, res) => {
   const message = req.body.message;
   if (message) {
     // 向 LINE Bot 用戶發送消息
-    client.pushMessage('U5f4d73e618b7bdfb0cb796dd4458dbb1', { // 替換為您 LINE Bot 用戶的 ID
+    client.pushMessage('as40315954', { // 替換為您 LINE Bot 用戶的 ID
       type: 'text',
       text: message
     })
