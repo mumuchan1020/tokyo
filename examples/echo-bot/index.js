@@ -2,10 +2,10 @@ const express = require('express');
 const axios = require('axios');
 const line = require('@line/bot-sdk');
 
-// 填入您的 Channel Secret 和 Channel Access Token
+// 從環境變數中讀取 Channel Secret 和 Channel Access Token
 const config = {
-  channelSecret: '4de7804ae152020565d1a8546e5636ae',
-  channelAccessToken: 'ytyib3TUCBV/AuVT5z4HI71GfH8uxDvltNsQjM4+K4oRd4wSoneE5KgHTFsfgzGG21d3aLJs+fKzNhF63D8rFwwEaC+S6tybH6vvnKXQQIZCUdDV/mL5dBcAmjNrmhoC3fDhSJFq1qnMhi9My8Bx7gdB04t89/1O/w1cDnyilFU=',
+  channelSecret: process.env.CHANNEL_SECRET,
+  channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
 };
 
 // 創建 LINE SDK 客戶端
@@ -61,15 +61,7 @@ async function handleEvent(event) {
   let commandUrl = '';
 
   // 根據消息內容構建 Arduino 控制 URL
-  if (message === '1' || message === 'a') {
-    commandUrl = 'http://<192.168.1.5>/16/on'; // 控制設備打開
-  } else if (message === '0' || message === 'b') {
-    commandUrl = 'http://<192.168.1.5>/16/off'; // 控制設備關閉
-  } else if (message === '2' || message === 'c') {
-    commandUrl = 'http://<192.168.1.5>/17/on'; // 控制設備打開
-  } else if (message === '3' || message === 'd') {
-    commandUrl = 'http://<192.168.1.5>/17/off'; // 控制設備關閉
-  }
+  // 在這裡添加您的 Arduino 控制邏輯
 
   // 如果 commandUrl 不為空，發送請求到 Arduino
   if (commandUrl) {
