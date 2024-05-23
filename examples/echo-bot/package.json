@@ -5,10 +5,12 @@
   "main": "index.js",
   "scripts": {
     "build-sdk": "cd ../../; npm i; npm run build",
-    "start": "node index.js"
+    "start": "node ."
   },
   "dependencies": {
     "@line/bot-sdk": "../../",
-    "express": "^4.17.3"
+    "express": "^4.17.3",
+    "body-parser": "^1.19.0",
+    "axios": "^1.0.0"
   }
 }
