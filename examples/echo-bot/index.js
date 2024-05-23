@@ -5,7 +5,7 @@ const axios = require('axios');
 const channelSecret = '4de7804ae152020565d1a8546e5636ae';
 
 // Arduino 的 IP 地址
-const arduinoIPAddress = '192.168.1.5';
+const arduinoIPAddress = '192.168.11.5';
 
 // 驗證簽名的函數
 function validateSignature(signature, requestBody) {
