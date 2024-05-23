@@ -44,33 +44,30 @@ app.post('/webhook', (req, res) => {
     if (req.body && req.body.events && req.body.events.length > 0 && req.body.events[0].message) {
         const receivedMessage = req.body.events[0].message.text.toLowerCase();
         console.log('Received message:', receivedMessage);
-        // 其他處理邏輯...
+        
+        // 控制 Arduino
+        let commandUrl = '';
+        if (receivedMessage === '1' || receivedMessage === 'a') {
+            commandUrl = `http://${arduinoIPAddress}/16/on`; // 控制設備打開
+        } else if (receivedMessage === '0' || receivedMessage === 'b') {
+            commandUrl = `http://${arduinoIPAddress}/16/off`; // 控制設備關閉
+        } else if (receivedMessage === '2' || receivedMessage === 'c') {
+            commandUrl = `http://${arduinoIPAddress}/17/on`; // 控制設備打開
+        } else if (receivedMessage === '3' || receivedMessage === 'd') {
+            commandUrl = `http://${arduinoIPAddress}/17/off`; // 控制設備關閉
+        }
+        
+        if (commandUrl) {
+            axios.get(commandUrl)
+                .then(response => {
+                    console.log('Arduino command sent successfully');
+                })
+                .catch(error => {
+                    console.error('Failed to send command to Arduino:', error);
+                });
+        }
     } else {
         console.error('Invalid request format, missing message property');
-    }
-});
-
-    
-    // 控制 Arduino
-    let commandUrl = '';
-    if (receivedMessage === '1' || receivedMessage === 'a') {
-        commandUrl = `http://${arduinoIPAddress}/16/on`; // 控制設備打開
-    } else if (receivedMessage === '0' || receivedMessage === 'b') {
-        commandUrl = `http://${arduinoIPAddress}/16/off`; // 控制設備關閉
-    } else if (receivedMessage === '2' || receivedMessage === 'c') {
-        commandUrl = `http://${arduinoIPAddress}/17/on`; // 控制設備打開
-    } else if (receivedMessage === '3' || receivedMessage === 'd') {
-        commandUrl = `http://${arduinoIPAddress}/17/off`; // 控制設備關閉
-    }
-    
-    if (commandUrl) {
-        axios.get(commandUrl)
-            .then(response => {
-                console.log('Arduino command sent successfully');
-            })
-            .catch(error => {
-                console.error('Failed to send command to Arduino:', error);
-            });
     }
     
     // 回應 200 OK
