@@ -41,9 +41,15 @@ app.use(verifySignatureMiddleware);
 
 // 處理 LINE 平台發送的 POST 請求
 app.post('/webhook', (req, res) => {
-    // 處理接收到的消息
-    const receivedMessage = req.body.events[0].message.text.toLowerCase();
-    console.log('Received message:', receivedMessage);
+    if (req.body && req.body.events && req.body.events.length > 0 && req.body.events[0].message) {
+        const receivedMessage = req.body.events[0].message.text.toLowerCase();
+        console.log('Received message:', receivedMessage);
+        // 其他處理邏輯...
+    } else {
+        console.error('Invalid request format, missing message property');
+    }
+});
+
     
     // 控制 Arduino
     let commandUrl = '';
