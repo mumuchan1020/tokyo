@@ -1,5 +1,7 @@
 const crypto = require('crypto');
 const axios = require('axios');
+const express = require('express');
+const app = express();
 
 // 用於驗證簽名的 Channel Secret
 const channelSecret = '4de7804ae152020565d1a8546e5636ae';
@@ -31,10 +33,6 @@ function verifySignatureMiddleware(req, res, next) {
     
     next(); // 簽名驗證通過，繼續處理請求
 }
-
-// 在 Express 應用程式中使用中間件
-const express = require('express');
-const app = express();
 
 app.use(express.json());
 app.use(verifySignatureMiddleware);
@@ -74,7 +72,6 @@ app.post('/webhook', (req, res) => {
     res.status(200).end();
 });
 
-// 啟動 Express 伺服器
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
