@@ -46,13 +46,13 @@ app.post('/webhook', (req, res) => {
         // 控制 Arduino
         let commandUrl = '';
         if (receivedMessage === '1' || receivedMessage === 'a') {
-            commandUrl = `http://${arduinoIPAddress}/16/on`; // 控制設備打開
+            commandUrl = `http://192.168.11.5/16/on`; // 控制設備打開
         } else if (receivedMessage === '0' || receivedMessage === 'b') {
-            commandUrl = `http://${arduinoIPAddress}/16/off`; // 控制設備關閉
+            commandUrl = `http://192.168.11.5/16/off`; // 控制設備關閉
         } else if (receivedMessage === '2' || receivedMessage === 'c') {
-            commandUrl = `http://${arduinoIPAddress}/17/on`; // 控制設備打開
+            commandUrl = `http://192.168.11.5/17/on`; // 控制設備打開
         } else if (receivedMessage === '3' || receivedMessage === 'd') {
-            commandUrl = `http://${arduinoIPAddress}/17/off`; // 控制設備關閉
+            commandUrl = `http://192.168.11.5/17/off`; // 控制設備關閉
         }
         
         if (commandUrl) {
