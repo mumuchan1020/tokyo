@@ -72,7 +72,7 @@ app.post('/webhook', (req, res) => {
     res.status(200).end();
 });
 
-const PORT = process.env.PORT || 10000;
+const PORT = process.env.PORT || 80;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
