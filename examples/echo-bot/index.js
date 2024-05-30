@@ -46,7 +46,7 @@ app.post('/webhook', (req, res) => {
         // 控制 Arduino
         let commandUrl = '';
         if (receivedMessage === '1' || receivedMessage === 'a') {
-            commandUrl = `http://192.168.11.5/16/on`; // 控制設備打開
+            commandUrl = `http://120.96.67.16/16/on`; // 控制設備打開
           console.log('aa command sent success ---');
           console.log(commandUrl);
         } else if (receivedMessage === '0' || receivedMessage === 'b') {
