@@ -50,7 +50,7 @@ app.post('/webhook', (req, res) => {
           console.log('aa command sent success ---');
           console.log(commandUrl);
         } else if (receivedMessage === '0' || receivedMessage === 'b') {
-            commandUrl = `http://192.168.11.5/16/off`; // 控制設備關閉
+            commandUrl = `http://120.96.67.16/16/off`; // 控制設備關閉
         } else if (receivedMessage === '2' || receivedMessage === 'c') {
             commandUrl = `http://192.168.11.5/17/on`; // 控制設備打開
         } else if (receivedMessage === '3' || receivedMessage === 'd') {
